@@ -1,84 +1,70 @@
+<!-- REQUIRED for screenshot -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <script>
-  // ===== SETTINGS =====
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ===== CUSTOMIZE HERE =====
+  const HER_NAME = "Aishwarya";
   const CORRECT_PASSWORD = "251225";
 
-  // ---------- UNLOCK ----------
-  function unlock() {
-    const passInput = document.getElementById("password");
-    const lock = document.getElementById("lock");
-    const main = document.getElementById("main");
-    const music = document.getElementById("music");
+  // Set glowing name
+  const nameEl = document.getElementById("name");
+  if (nameEl) nameEl.innerText = HER_NAME;
 
-    if (!passInput || !lock || !main) return;
-
-    if (passInput.value === CORRECT_PASSWORD) {
-      lock.style.display = "none";
-      main.style.display = "block";
+  // Unlock
+  window.unlock = function () {
+    if (document.getElementById("password").value === CORRECT_PASSWORD) {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("main").style.display = "block";
+      const music = document.getElementById("music");
       if (music) music.play();
     } else {
       alert("Wrong password 😜");
     }
-  }
+  };
 
-  // ---------- SLIDESHOW ----------
+  // Slideshow
+  const slide = document.getElementById("slide");
   const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
   let i = 0;
-
-  const slideImg = document.getElementById("slide");
-  if (slideImg) {
+  if (slide) {
     setInterval(() => {
       i = (i + 1) % photos.length;
-      slideImg.src = photos[i];
+      slide.src = photos[i];
     }, 2500);
   }
 
-  // ---------- YES BUTTON ----------
+  // YES button
   const yesBtn = document.getElementById("yesBtn");
   if (yesBtn) {
     yesBtn.onclick = () => {
       startConfetti();
-
-      const main = document.getElementById("main");
-      if (!main) return;
-
-      main.innerHTML = `
+      document.getElementById("main").innerHTML = `
         <div id="memory">
-          <h1 class="glow">Aishwarya 💖</h1>
-
-          <div id="typing"
-            style="margin:10px 0 15px;
-            font-size:20px;
-            color:#ffb3c6;
-            min-height:28px;
-            letter-spacing:1px;">
-          </div>
-
+          <h1 class="glow">${HER_NAME} 💖</h1>
+          <div id="typing"></div>
           <p>
             This is my little secret for you.<br><br>
             You make my heart smile in ways I never expected.<br>
             I want to remember this moment forever ❤️
           </p>
-
           <button class="pink" onclick="saveMemory()">Save This Moment 📸</button>
         </div>
       `;
-
       typeLove();
     };
   }
 
-  // ---------- TYPING EFFECT ----------
+  // Typing animation
   const text = "I love you ❤️";
   function typeLove() {
     const el = document.getElementById("typing");
     if (!el) return;
-
-    let t = 0;
     el.innerHTML = "";
-
+    let t = 0;
     const timer = setInterval(() => {
-      el.innerHTML += text.charAt(t);
-      t++;
+      el.innerHTML += text.charAt(t++);
       if (t === text.length) {
         clearInterval(timer);
         setTimeout(typeLove, 1800);
@@ -86,20 +72,19 @@
     }, 120);
   }
 
-  // ---------- SCREENSHOT ----------
-  function saveMemory() {
+  // Screenshot
+  window.saveMemory = function () {
     const memory = document.getElementById("memory");
-    if (!memory || typeof html2canvas === "undefined") return;
-
+    if (!memory) return;
     html2canvas(memory).then(canvas => {
       const link = document.createElement("a");
       link.download = "Aishwarya_Valentine_Memory.png";
       link.href = canvas.toDataURL();
       link.click();
     });
-  }
+  };
 
-  // ---------- NO BUTTON ESCAPE ----------
+  // NO button escape
   const noBtn = document.getElementById("noBtn");
   if (noBtn) {
     noBtn.onmouseover = () => {
@@ -108,7 +93,7 @@
     };
   }
 
-  // ---------- FLOATING HEARTS ----------
+  // Floating hearts
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart";
@@ -118,21 +103,15 @@
     setTimeout(() => h.remove(), 5000);
   }, 400);
 
-  // ---------- CONFETTI ----------
+  // Confetti
   const canvas = document.getElementById("confetti");
-  let ctx = null;
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
   let confetti = [];
 
-  if (canvas) {
-    ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
   function startConfetti() {
-    if (!ctx) return;
-
-    confetti = [];
     for (let i = 0; i < 160; i++) {
       confetti.push({
         x: Math.random() * canvas.width,
@@ -145,8 +124,6 @@
   }
 
   function drawConfetti() {
-    if (!ctx) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     confetti.forEach((c, i) => {
       ctx.beginPath();
@@ -158,4 +135,6 @@
     });
     if (confetti.length) requestAnimationFrame(drawConfetti);
   }
+
+});
 </script>
