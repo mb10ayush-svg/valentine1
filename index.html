@@ -1,140 +1,220 @@
-<!-- REQUIRED for screenshot -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>For Aishwarya 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Screenshot library -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff4d6d, #c9184a);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .box {
+      background: #1b1b1b;
+      color: white;
+      padding: 20px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .glow {
+      font-size: 26px;
+      font-weight: bold;
+      color: #ffb3c6;
+      text-shadow: 0 0 10px #ff4d6d;
+      margin-bottom: 10px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #ff4d6d;
+      color: white;
+      cursor: pointer;
+    }
+
+    img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin: 10px 0;
+    }
+
+    #noBtn {
+      position: absolute;
+      background: gray;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: float 5s linear infinite;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh); opacity: 0; }
+      to { transform: translateY(-10vh); opacity: 1; }
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<audio id="music" src="music.mp3" loop></audio>
+
+<!-- LOCK SCREEN -->
+<div class="box" id="lock">
+  <h2>🔒 Enter Password</h2>
+  <input type="password" id="password" placeholder="Password">
+  <br>
+  <button onclick="unlock()">Unlock ✨</button>
+</div>
+
+<!-- MAIN SCREEN -->
+<div class="box" id="main" style="display:none;">
+  <div class="glow">Aishwarya 💖</div>
+  <img id="slide" src="photo1.jpg">
+  <p>Will you be my Valentine?</p>
+  <button id="yesBtn">Yes 💖</button>
+  <button id="noBtn">No 🙈</button>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ===== CUSTOMIZE HERE =====
-  const HER_NAME = "Aishwarya";
-  const CORRECT_PASSWORD = "251225";
+  const PASSWORD = "251225";
+  const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  let index = 0;
 
-  // Set glowing name
-  const nameEl = document.getElementById("name");
-  if (nameEl) nameEl.innerText = HER_NAME;
+  const slide = document.getElementById("slide");
+  setInterval(() => {
+    index = (index + 1) % photos.length;
+    slide.src = photos[index];
+  }, 2500);
 
-  // Unlock
   window.unlock = function () {
-    if (document.getElementById("password").value === CORRECT_PASSWORD) {
+    if (document.getElementById("password").value === PASSWORD) {
       document.getElementById("lock").style.display = "none";
       document.getElementById("main").style.display = "block";
-      const music = document.getElementById("music");
-      if (music) music.play();
+      document.getElementById("music").play();
     } else {
       alert("Wrong password 😜");
     }
   };
 
-  // Slideshow
-  const slide = document.getElementById("slide");
-  const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
-  let i = 0;
-  if (slide) {
-    setInterval(() => {
-      i = (i + 1) % photos.length;
-      slide.src = photos[i];
-    }, 2500);
-  }
+  document.getElementById("yesBtn").onclick = () => {
+    startConfetti();
+    document.getElementById("main").innerHTML = `
+      <div id="memory">
+        <h2 class="glow">Aishwarya 💖</h2>
+        <div id="typing"></div>
+        <p>You make my world beautiful ❤️</p>
+        <button onclick="saveMemory()">Save This Moment 📸</button>
+      </div>
+    `;
+    typeText();
+  };
 
-  // YES button
-  const yesBtn = document.getElementById("yesBtn");
-  if (yesBtn) {
-    yesBtn.onclick = () => {
-      startConfetti();
-      document.getElementById("main").innerHTML = `
-        <div id="memory">
-          <h1 class="glow">${HER_NAME} 💖</h1>
-          <div id="typing"></div>
-          <p>
-            This is my little secret for you.<br><br>
-            You make my heart smile in ways I never expected.<br>
-            I want to remember this moment forever ❤️
-          </p>
-          <button class="pink" onclick="saveMemory()">Save This Moment 📸</button>
-        </div>
-      `;
-      typeLove();
-    };
-  }
+  const noBtn = document.getElementById("noBtn");
+  noBtn.onmouseover = () => {
+    noBtn.style.left = Math.random() * 80 + "vw";
+    noBtn.style.top = Math.random() * 80 + "vh";
+  };
 
-  // Typing animation
   const text = "I love you ❤️";
-  function typeLove() {
+  function typeText() {
     const el = document.getElementById("typing");
-    if (!el) return;
+    let i = 0;
     el.innerHTML = "";
-    let t = 0;
     const timer = setInterval(() => {
-      el.innerHTML += text.charAt(t++);
-      if (t === text.length) {
-        clearInterval(timer);
-        setTimeout(typeLove, 1800);
-      }
+      el.innerHTML += text[i++];
+      if (i === text.length) clearInterval(timer);
     }, 120);
   }
 
-  // Screenshot
   window.saveMemory = function () {
-    const memory = document.getElementById("memory");
-    if (!memory) return;
-    html2canvas(memory).then(canvas => {
+    html2canvas(document.getElementById("memory")).then(canvas => {
       const link = document.createElement("a");
-      link.download = "Aishwarya_Valentine_Memory.png";
+      link.download = "Aishwarya_Memory.png";
       link.href = canvas.toDataURL();
       link.click();
     });
   };
 
-  // NO button escape
-  const noBtn = document.getElementById("noBtn");
-  if (noBtn) {
-    noBtn.onmouseover = () => {
-      noBtn.style.left = Math.random() * 80 + "vw";
-      noBtn.style.top = Math.random() * 80 + "vh";
-    };
-  }
-
-  // Floating hearts
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 5000);
-  }, 400);
-
-  // Confetti
+  // CONFETTI
   const canvas = document.getElementById("confetti");
-  if (!canvas) return;
   const ctx = canvas.getContext("2d");
   canvas.width = innerWidth;
   canvas.height = innerHeight;
   let confetti = [];
 
   function startConfetti() {
-    for (let i = 0; i < 160; i++) {
+    for (let i = 0; i < 150; i++) {
       confetti.push({
         x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
+        y: Math.random() * canvas.height,
         r: Math.random() * 6 + 4,
-        color: `hsl(${Math.random() * 360},100%,70%)`
+        c: `hsl(${Math.random()*360},100%,70%)`
       });
     }
-    requestAnimationFrame(drawConfetti);
+    draw();
   }
 
-  function drawConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confetti.forEach((c, i) => {
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach((p,i)=>{
+      ctx.fillStyle=p.c;
       ctx.beginPath();
-      ctx.fillStyle = c.color;
-      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
       ctx.fill();
-      c.y += 4;
-      if (c.y > canvas.height) confetti.splice(i, 1);
+      p.y+=4;
+      if(p.y>canvas.height) confetti.splice(i,1);
     });
-    if (confetti.length) requestAnimationFrame(drawConfetti);
+    if(confetti.length) requestAnimationFrame(draw);
   }
+
+  // Floating hearts
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }, 500);
 
 });
 </script>
+
+</body>
+  </html>
