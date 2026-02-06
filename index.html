@@ -1,0 +1,131 @@
+<script>
+  // ===== CUSTOMIZE HERE =====
+  const HER_NAME = "Aishwarya";
+  const CORRECT_PASSWORD = "251225"; // 🔐 password updated
+
+  // Set glowing name
+  document.getElementById("name").innerText = HER_NAME;
+
+  function unlock() {
+    if (document.getElementById("password").value === CORRECT_PASSWORD) {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("main").style.display = "block";
+      document.getElementById("music").play();
+    } else {
+      alert("Wrong password 😜");
+    }
+  }
+
+  // Slideshow
+  const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % photos.length;
+    document.getElementById("slide").src = photos[i];
+  }, 2500);
+
+  // YES button
+  document.getElementById("yesBtn").onclick = () => {
+    startConfetti();
+    document.getElementById("main").innerHTML = `
+      <div id="memory">
+        <h1 class="glow">Aishwarya 💖</h1>
+
+        <div id="typing" style="
+          margin: 10px 0 15px;
+          font-size: 20px;
+          color: #ffb3c6;
+          min-height: 28px;
+          letter-spacing: 1px;
+        "></div>
+
+        <p>
+          This is my little secret for you.<br><br>
+          You make my heart smile in ways I never expected.<br>
+          I want to remember this moment forever ❤️
+        </p>
+
+        <button class="pink" onclick="saveMemory()">Save This Moment 📸</button>
+      </div>
+    `;
+    typeLove();
+  };
+
+  // 💫 Typing animation: "I love you"
+  const text = "I love you ❤️";
+  let t = 0;
+  function typeLove() {
+    const el = document.getElementById("typing");
+    if (!el) return;
+    el.innerHTML = "";
+    t = 0;
+    const timer = setInterval(() => {
+      el.innerHTML += text.charAt(t);
+      t++;
+      if (t === text.length) {
+        clearInterval(timer);
+        setTimeout(typeLove, 1800); // loop softly
+      }
+    }, 120);
+  }
+
+  // Screenshot
+  function saveMemory() {
+    html2canvas(document.getElementById("memory")).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "Aishwarya_Valentine_Memory.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  // No button escape
+  const noBtn = document.getElementById("noBtn");
+  noBtn.onmouseover = () => {
+    noBtn.style.left = Math.random() * 80 + "vw";
+    noBtn.style.top = Math.random() * 80 + "vh";
+  };
+
+  // Floating hearts
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }, 400);
+
+  // 🎉 Confetti
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let confetti = [];
+
+  function startConfetti() {
+    for (let i = 0; i < 160; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        color: `hsl(${Math.random() * 360},100%,70%)`
+      });
+    }
+    requestAnimationFrame(drawConfetti);
+  }
+
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetti.forEach((c, i) => {
+      ctx.beginPath();
+      ctx.fillStyle = c.color;
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.fill();
+      c.y += 4;
+      if (c.y > canvas.height) confetti.splice(i, 1);
+    });
+    if (confetti.length) requestAnimationFrame(drawConfetti);
+  }
+</script>
