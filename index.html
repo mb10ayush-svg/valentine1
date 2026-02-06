@@ -1,10 +1,7 @@
 <script>
   // ===== CUSTOMIZE HERE =====
-  const HER_NAME = "Aishwarya";
+  const HER_NAME = "Aiswarya";
   const CORRECT_PASSWORD = "251225"; // 🔐 password updated
-
-  // Set glowing name
-  document.getElementById("name").innerText = HER_NAME;
 
   function unlock() {
     if (document.getElementById("password").value === CORRECT_PASSWORD) {
@@ -29,7 +26,7 @@
     startConfetti();
     document.getElementById("main").innerHTML = `
       <div id="memory">
-        <h1 class="glow">Aishwarya 💖</h1>
+        <h1 class="glow">Aiswarya 💖</h1>
 
         <div id="typing" style="
           margin: 10px 0 15px;
@@ -73,7 +70,7 @@
   function saveMemory() {
     html2canvas(document.getElementById("memory")).then(canvas => {
       const link = document.createElement("a");
-      link.download = "Aishwarya_Valentine_Memory.png";
+      link.download = "Aiswarya_Valentine_Memory.png";
       link.href = canvas.toDataURL();
       link.click();
     });
